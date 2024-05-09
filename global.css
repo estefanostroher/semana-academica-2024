@@ -235,17 +235,14 @@ body button:hover {
     border-radius: 20px;
     flex-direction: column;
     background-color: #333333;
-
+    cursor: pointer;
+    transition: transform 0.4s ease
 }
 
 .cardContainer:hover {
-    color: aqua;
+    transform: scale(0.92);
 }
 
-.customLink:hover {
-    cursor: pointer;
-    opacity: .9;
-}
 
 .cardInfoContainer {
     display: flex;
