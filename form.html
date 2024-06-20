@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulário de Inscrição</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-image: url("/semana-academica-2024/assets/images/fundo.png");
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
+
+      .container {
+        margin-top: 50px;
+        max-width: 470px;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 250px;
+      }
+
+      .container2 {
+        margin: 0 auto;
+        margin-top: 50px;
+        max-width: 470px;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-custom {
+        background-color: #6a0dad;
+        color: white;
+      }
+
+      .btn-custom:hover {
+        background-color: #5a0c96;
+        color: white;
+      }
+
+      .form-control:focus {
+        border-color: #6a0dad;
+        box-shadow: 0 0 0 0.2rem rgba(106, 13, 173, 0.25);
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+        <h2 class="text-center">Painel Administrador</h2>
+      <form id="inscription-form" class="hidden">
+        <h2 class="text-center">Inscrição no Curso</h2>
+        <div class="form-group">
+          <label for="nome">Nome Completo</label>
+          <input
+            type="text"
+            class="form-control"
+            id="nome"
+            placeholder="Digite seu nome completo"
+          />
+        </div>
+        <div class="form-group">
+          <label for="email">Endereço de Email</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            placeholder="Digite seu email"
+          />
+        </div>
+        <div class="form-group">
+          <label for="telefone">Número do WhatsApp</label>
+          <input
+            type="tel"
+            class="form-control"
+            id="telefone"
+            placeholder="Digite seu número de WhatsApp"
+          />
+        </div>
+        <div class="form-group">
+          <label for="conheceu">Como conheceu o curso?</label>
+          <input
+            type="text"
+            class="form-control"
+            id="conheceu"
+            placeholder="Digite como conheceu o curso"
+          />
+        </div>
+        <button type="submit" class="btn btn-custom btn-block">
+          Enviar Inscrição
+        </button>
+      </form>
+    </div>
+    <div class="container2">
+      <button
+        type="button"
+        class="btn btn-custom btn-block"
+        onclick="showForm()"
+      >
+        Adicionar
+      </button>
+      <button
+        type="button"
+        class="btn btn-custom btn-block"
+        onclick="showAll()"
+      >
+        Mostrar Todos
+      </button>
+      <button
+        type="button"
+        class="btn btn-custom btn-block"
+        onclick="showOne()"
+      >
+        Mostrar um Específico
+      </button>
+      <button
+        type="button"
+        class="btn btn-custom btn-block"
+        onclick="showDeleteForm()"
+      >
+        Deletar
+      </button>
+    </div>
+
+    <!-- Campos para mostrar todos os registros -->
+    <div class="container2 hidden" id="showAllContainer">
+      <!-- Coloque aqui os campos para mostrar todos os registros -->
+      <p>Aqui você pode exibir todos os registros.</p>
+    </div>
+
+    <!-- Campo para mostrar um registro específico -->
+    <div class="container2 hidden" id="showOneContainer">
+      <!-- Coloque aqui os campos para mostrar um registro específico -->
+      <div class="form-group">
+        <label for="deleteEmail">Digite o email para pesquisa:</label>
+        <input
+          type="email"
+          class="form-control"
+          id="search"
+          placeholder="Digite o email"
+        />
+      </div>
+      <button type="button" class="btn btn-custom btn-block" onclick="deleteEntry()">
+        Pesquisar
+      </button>
+    </div>
+
+    <!-- Campo de entrada de e-mail e botão de exclusão -->
+    <div class="container2 hidden" id="deleteEntryContainer">
+      <div class="form-group">
+        <label for="deleteEmail">Digite o email para exclusão:</label>
+        <input
+          type="email"
+          class="form-control"
+          id="deleteEmail"
+          placeholder="Digite o email"
+        />
+      </div>
+      <button
+        type="button"
+        class="btn btn-danger btn-block"
+        onclick="deleteEntry()"
+      >
+        Excluir
+      </button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+      function showForm() {
+        // Mostra o formulário de inscrição e oculta outros campos
+        document.getElementById("inscription-form").classList.remove("hidden");
+        document.getElementById("showAllContainer").classList.add("hidden");
+        document.getElementById("showOneContainer").classList.add("hidden");
+        document.getElementById("deleteEntryContainer").classList.add("hidden");
+      }
+
+      function showAll() {
+        // Mostra os campos para mostrar todos os registros e oculta outros campos
+        document.getElementById("showAllContainer").classList.remove("hidden");
+        document.getElementById("inscription-form").classList.add("hidden");
+        document.getElementById("showOneContainer").classList.add("hidden");
+        document.getElementById("deleteEntryContainer").classList.add("hidden");
+      }
+
+      function showOne() {
+        // Mostra os campos para mostrar um registro específico e oculta outros campos
+        document.getElementById("showOneContainer").classList.remove("hidden");
+        document.getElementById("inscription-form").classList.add("hidden");
+        document.getElementById("showAllContainer").classList.add("hidden");
+        document.getElementById("deleteEntryContainer").classList.add("hidden");
+      }
+
+      function showDeleteForm() {
+        // Mostra o campo de entrada de e-mail e o botão de exclusão e oculta outros campos
+        document
+          .getElementById("deleteEntryContainer")
+          .classList.remove("hidden");
+        document.getElementById("inscription-form").classList.add("hidden");
+        document.getElementById("showAllContainer").classList.add("hidden");
+        document.getElementById("showOneContainer").classList.add("hidden");
+      }
+    </script>
+  </body>
+</html>

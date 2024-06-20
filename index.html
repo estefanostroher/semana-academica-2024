@@ -10,6 +10,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="global.css" />
     <title>Document</title>
+    <script> src="/semana-academica-2024/form.html"</script>
 </head>
 
 <body>
@@ -25,10 +26,15 @@
             <a>Marketplace</a>
             <a>Rankings</a>
             <a>Connect a wallet</a>
-            <button class="btnMenu">
+            <button id="btnMenu" class="btnMenu">
                 <img src="./assets/images/icon-user.svg" alt="IconUser">
                 Sign up
             </button>
+            <script>
+                document.getElementById('btnMenu').addEventListener('click', function() {
+                    window.location.href = 'form.html';
+                }); 
+            </script>
         </nav>
         <div class="menuBurguer">
             <img src="./assets/images/menu-burguer.svg" alt="MenuBurguer">
