@@ -59,8 +59,8 @@
   </head>
   <body>
     <div class="container">
-        <h2 class="text-center">Painel Administrador</h2>
-      <form id="inscription-form" class="hidden">
+      <h2 class="text-center">Painel Administrador</h2>
+      <form id="inscription-form" class="hidden" onsubmit="handleSubmit(event)">
         <h2 class="text-center">Inscrição no Curso</h2>
         <div class="form-group">
           <label for="nome">Nome Completo</label>
@@ -69,6 +69,7 @@
             class="form-control"
             id="nome"
             placeholder="Digite seu nome completo"
+            required
           />
         </div>
         <div class="form-group">
@@ -78,6 +79,7 @@
             class="form-control"
             id="email"
             placeholder="Digite seu email"
+            required
           />
         </div>
         <div class="form-group">
@@ -87,6 +89,7 @@
             class="form-control"
             id="telefone"
             placeholder="Digite seu número de WhatsApp"
+            required
           />
         </div>
         <div class="form-group">
@@ -95,7 +98,9 @@
             type="text"
             class="form-control"
             id="conheceu"
+            name="comoConheceu"
             placeholder="Digite como conheceu o curso"
+            required
           />
         </div>
         <button type="submit" class="btn btn-custom btn-block">
@@ -136,26 +141,59 @@
 
     <!-- Campos para mostrar todos os registros -->
     <div class="container2 hidden" id="showAllContainer">
-      <!-- Coloque aqui os campos para mostrar todos os registros -->
-      <p>Aqui você pode exibir todos os registros.</p>
+      <h3>Todos os Registros</h3>
+      <div style="overflow-x: auto;">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Como Conheceu</th>
+          </tr>
+        </thead>
+        <tbody id="allUsersTableBody"></tbody>
+      </table>
     </div>
+    </div>
+    
 
     <!-- Campo para mostrar um registro específico -->
     <div class="container2 hidden" id="showOneContainer">
-      <!-- Coloque aqui os campos para mostrar um registro específico -->
       <div class="form-group">
-        <label for="deleteEmail">Digite o email para pesquisa:</label>
+        <label for="searchEmail">Digite o email para pesquisa:</label>
         <input
           type="email"
           class="form-control"
-          id="search"
+          id="searchEmail"
           placeholder="Digite o email"
         />
       </div>
-      <button type="button" class="btn btn-custom btn-block" onclick="deleteEntry()">
+      <button
+        type="button"
+        class="btn btn-custom btn-block"
+        onclick="searchUser()"
+      >
         Pesquisar
       </button>
+      <div id="userDetails">
+        <h3>Dados do Usuário Específico</h3>
+        <div id="specificUserTableContainer" style="overflow-x: auto; display: none;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Como Conheceu</th>
+              </tr>
+            </thead>
+            <tbody id="specificUserTableBody"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
+
 
     <!-- Campo de entrada de e-mail e botão de exclusão -->
     <div class="container2 hidden" id="deleteEntryContainer">
@@ -177,13 +215,12 @@
       </button>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
       function showForm() {
-        // Mostra o formulário de inscrição e oculta outros campos
         document.getElementById("inscription-form").classList.remove("hidden");
         document.getElementById("showAllContainer").classList.add("hidden");
         document.getElementById("showOneContainer").classList.add("hidden");
@@ -191,15 +228,14 @@
       }
 
       function showAll() {
-        // Mostra os campos para mostrar todos os registros e oculta outros campos
         document.getElementById("showAllContainer").classList.remove("hidden");
         document.getElementById("inscription-form").classList.add("hidden");
         document.getElementById("showOneContainer").classList.add("hidden");
         document.getElementById("deleteEntryContainer").classList.add("hidden");
+        fetchAllUsers();
       }
 
       function showOne() {
-        // Mostra os campos para mostrar um registro específico e oculta outros campos
         document.getElementById("showOneContainer").classList.remove("hidden");
         document.getElementById("inscription-form").classList.add("hidden");
         document.getElementById("showAllContainer").classList.add("hidden");
@@ -207,13 +243,119 @@
       }
 
       function showDeleteForm() {
-        // Mostra o campo de entrada de e-mail e o botão de exclusão e oculta outros campos
         document
           .getElementById("deleteEntryContainer")
           .classList.remove("hidden");
         document.getElementById("inscription-form").classList.add("hidden");
         document.getElementById("showAllContainer").classList.add("hidden");
         document.getElementById("showOneContainer").classList.add("hidden");
+      }
+
+      function handleSubmit(event) {
+        event.preventDefault();
+
+        const form = event.target;
+        const data = {
+          nome: form.nome.value,
+          email: form.email.value,
+          telefone: form.telefone.value,
+          comoConheceu: form.conheceu.value,
+        };
+
+        fetch("http://localhost:8080/usuarios/cadastro", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((user) => {
+            alert("Inscrição realizada com sucesso!");
+            form.reset();
+          })
+          .catch((error) => {
+            alert("Erro ao enviar inscrição. Tente novamente.");
+            console.error("Error:", error);
+          });
+      }
+
+      function fetchAllUsers() {
+        fetch("http://localhost:8080/usuarios/listar")
+          .then((response) => response.json())
+          .then((users) => {
+            const allUsersTableBody =
+              document.getElementById("allUsersTableBody");
+            allUsersTableBody.innerHTML = "";
+            users.forEach((user) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+          <td>${user.nome}</td>
+          <td>${user.email}</td>
+          <td>${user.telefone}</td>
+          <td>${user.comoConheceu}</td>
+        `;
+              allUsersTableBody.appendChild(row);
+            });
+          });
+      }
+
+      function searchUser() {
+    const email = document.getElementById("searchEmail").value;
+    fetch(`http://localhost:8080/usuarios/${email}`)
+      .then((response) => response.json())
+      .then((user) => {
+        const userDetailsDiv = document.getElementById("userDetails");
+        userDetailsDiv.innerHTML = "";
+        if (user) {
+          userDetailsDiv.innerHTML = `
+            <h3>Dados do Usuário Específico</h3>
+            <div id="specificUserTableContainer" style="overflow-x: auto;">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Telefone</th>
+                    <th>Como Conheceu</th>
+                  </tr>
+                </thead>
+                <tbody id="specificUserTableBody">
+                  <tr>
+                    <td>${user.nome}</td>
+                    <td>${user.email}</td>
+                    <td>${user.telefone}</td>
+                    <td>${user.comoConheceu}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>`;
+        } else {
+          userDetailsDiv.textContent = "Usuário não encontrado.";
+        }
+      })
+      .catch((error) => {
+        alert("Erro ao buscar usuário. Tente novamente.");
+        console.error("Error:", error);
+      });
+  }
+
+      function deleteEntry() {
+        const email = document.getElementById("deleteEmail").value;
+        fetch(`http://localhost:8080/${email}`, {
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (response.ok) {
+              alert("Usuário deletado com sucesso.");
+            } else {
+              alert("Usuário não encontrado.");
+            }
+          })
+          .catch((error) => {
+            alert("Erro ao deletar usuário. Tente novamente.");
+            console.error("Error:", error);
+          });
       }
     </script>
   </body>

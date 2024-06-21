@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ public class UsuarioControlador {
 
     private List<Usuario> usuarios = new ArrayList<>();
 
+    @CrossOrigin(origins = "*")
     @PostMapping("/usuarios/cadastro")
     public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario request) {
         if (request.getEmail() == null || request.getEmail().isBlank()) {
@@ -34,11 +36,13 @@ public class UsuarioControlador {
         return ResponseEntity.ok(request);
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/usuarios/listar")
     public ResponseEntity<List<Usuario>> listar() {
         return ResponseEntity.ok(usuarios);
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/usuarios/{email}")
     public ResponseEntity<Usuario> buscarPorEmail(@PathVariable("email") String email) {
         if (email.isBlank()) {
@@ -53,6 +57,7 @@ public class UsuarioControlador {
         return ResponseEntity.notFound().build();
     }
 
+    @CrossOrigin(origins = "*")
     @DeleteMapping("/{email}")
     public ResponseEntity<Usuario> deletarPorEmail(@PathVariable("email") String email) {
         if (email.isBlank()) {
@@ -65,7 +70,7 @@ public class UsuarioControlador {
                 return ResponseEntity.ok(usuario);
             }
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
     }
     
 }
